@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBAMbridge — Case Study · Sumith Gorityala</title>
+<meta name="description" content="How I built CBAMbridge, a live agentic AI platform automating EU carbon border compliance, from concept to MVP in 6 weeks.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAF8F4;
+    --paper-2: #F2EFE7;
+    --ink: #1A1816;
+    --ink-soft: #5C5650;
+    --ink-faint: #8A8378;
+    --line: #DEDACE;
+    --line-soft: #EBE8E0;
+    --accent: #B8431F;
+    --accent-soft: #F0DDD2;
+    --white: #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 2rem; }
+  .wrap-wide { max-width: 920px; margin: 0 auto; padding: 0 2rem; }
+
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(250,248,244,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .nav-inner {
+    max-width: 920px; margin: 0 auto; padding: 1.1rem 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-name {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.05rem;
+    color: var(--ink); text-decoration: none; letter-spacing: -0.01em;
+  }
+  .nav-links { display: flex; gap: 1.75rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.85rem; color: var(--ink-soft); text-decoration: none;
+    transition: color 0.2s; font-weight: 500;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  .back-link {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.85rem; color: var(--ink-soft); text-decoration: none;
+    margin: 2.5rem 0 0; font-weight: 500; transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--accent); }
+
+  header.cs-hero { padding: 2rem 0 2.5rem; }
+  .cs-eyebrow {
+    font-size: 0.78rem; color: var(--accent); text-transform: uppercase;
+    letter-spacing: 0.1em; font-weight: 600; margin-bottom: 1rem;
+  }
+  .cs-title {
+    font-family: 'Fraunces', serif; font-size: clamp(2.2rem, 5vw, 3.2rem);
+    font-weight: 500; line-height: 1.1; letter-spacing: -0.02em;
+    color: var(--ink); margin-bottom: 1.25rem;
+  }
+  .cs-lede {
+    font-size: 1.15rem; color: var(--ink-soft); font-weight: 400;
+    line-height: 1.65;
+  }
+
+  .cs-meta {
+    display: flex; flex-wrap: wrap; gap: 2rem;
+    padding: 1.75rem 0; margin: 2rem 0;
+    border-top: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .cs-meta-item { display: flex; flex-direction: column; gap: 0.25rem; }
+  .cs-meta-label {
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-faint); font-weight: 600;
+  }
+  .cs-meta-value { font-size: 0.92rem; color: var(--ink); font-weight: 500; }
+
+  .cs-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+    margin: 2.5rem 0;
+  }
+  .cs-stat {
+    background: var(--paper-2); border-radius: 6px; padding: 1.25rem 1rem;
+    text-align: center;
+  }
+  .cs-stat-num {
+    font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 500;
+    color: var(--accent); letter-spacing: -0.02em; line-height: 1;
+  }
+  .cs-stat-label { font-size: 0.74rem; color: var(--ink-faint); margin-top: 0.4rem; }
+
+  section.cs-body { padding: 1rem 0; }
+  .cs-section { margin: 2.75rem 0; }
+  .cs-h2 {
+    font-family: 'Fraunces', serif; font-size: 1.6rem; font-weight: 500;
+    letter-spacing: -0.015em; color: var(--ink); margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+  .cs-num {
+    font-size: 0.8rem; color: var(--accent); font-weight: 600;
+    letter-spacing: 0.05em; display: block; margin-bottom: 0.4rem;
+  }
+  .cs-body p {
+    font-size: 1.02rem; color: var(--ink-soft); margin-bottom: 1.1rem;
+    line-height: 1.75;
+  }
+  .cs-body p strong { color: var(--ink); font-weight: 600; }
+
+  .cs-callout {
+    background: var(--paper-2); border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0; padding: 1.25rem 1.5rem; margin: 1.75rem 0;
+  }
+  .cs-callout p {
+    font-family: 'Fraunces', serif; font-size: 1.1rem; font-style: italic;
+    color: var(--ink); margin: 0; line-height: 1.55;
+  }
+
+  .cs-list { list-style: none; margin: 1.25rem 0; }
+  .cs-list li {
+    font-size: 1rem; color: var(--ink-soft); padding-left: 1.5rem;
+    position: relative; margin-bottom: 0.75rem; line-height: 1.7;
+  }
+  .cs-list li::before {
+    content: '→'; position: absolute; left: 0; color: var(--accent);
+    font-weight: 600;
+  }
+  .cs-list li strong { color: var(--ink); font-weight: 600; }
+
+  .cs-stack-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.25rem 0; }
+  .cs-tag {
+    font-size: 0.78rem; color: var(--accent); background: var(--accent-soft);
+    padding: 0.35rem 0.75rem; border-radius: 4px; font-weight: 500;
+    font-family: 'Inter', monospace;
+  }
+
+  .cs-flow {
+    background: var(--white); border: 1px solid var(--line-soft);
+    border-radius: 8px; padding: 1.75rem; margin: 1.75rem 0;
+  }
+  .cs-flow-title {
+    font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-faint); font-weight: 600; margin-bottom: 1.25rem;
+  }
+  .cs-flow-steps { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+  .cs-flow-step {
+    flex: 1; min-width: 90px; background: var(--paper-2); border-radius: 6px;
+    padding: 0.85rem 0.6rem; text-align: center; font-size: 0.82rem;
+    color: var(--ink); font-weight: 500;
+  }
+  .cs-flow-arrow { color: var(--accent); font-weight: 600; font-size: 1.1rem; }
+
+  .cs-cta {
+    text-align: center; padding: 3.5rem 0 4rem; margin-top: 2rem;
+    border-top: 1px solid var(--line-soft);
+  }
+  .cs-cta-title {
+    font-family: 'Fraunces', serif; font-size: 1.6rem; font-weight: 500;
+    margin-bottom: 1rem; letter-spacing: -0.01em;
+  }
+  .cs-cta-sub { font-size: 1rem; color: var(--ink-soft); margin-bottom: 1.75rem; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.65rem 1.3rem; border-radius: 4px; text-decoration: none;
+    font-size: 0.88rem; font-weight: 600; transition: all 0.2s;
+  }
+  .btn-fill { background: var(--ink); color: var(--paper); }
+  .btn-fill:hover { background: var(--accent); }
+  .btn-outline { border: 1px solid var(--line); color: var(--ink); margin-left: 0.5rem; }
+  .btn-outline:hover { border-color: var(--ink); }
+
+  footer {
+    border-top: 1px solid var(--line-soft); padding: 1.5rem 2rem;
+    display: flex; justify-content: space-between;
+    font-size: 0.78rem; color: var(--ink-faint);
+    max-width: 920px; margin: 0 auto; width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .cs-stats { grid-template-columns: repeat(2, 1fr); }
+    .nav-links { display: none; }
+    .cs-meta { gap: 1.25rem; }
+    .cs-flow-steps { flex-direction: column; }
+    .cs-flow-step { width: 100%; }
+    .cs-flow-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-name">Sumith Gorityala</a>
+    <ul class="nav-links">
+      <li><a href="index.html#projects">Projects</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="wrap">
+  <a href="index.html" class="back-link">← Back to home</a>
+</div>
+
+<header class="cs-hero">
+  <div class="wrap">
+    <div class="cs-eyebrow">Case Study · AI Product</div>
+    <h1 class="cs-title">CBAMbridge: shipping an agentic AI compliance platform in 6 weeks</h1>
+    <p class="cs-lede">How I took a dense, 200-page piece of EU climate regulation and turned it into a working AI product that converts messy PDFs into audit-ready emissions data — built solo, from concept to live MVP.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="cs-meta">
+    <div class="cs-meta-item">
+      <span class="cs-meta-label">Role</span>
+      <span class="cs-meta-value">Founder & Product Lead</span>
+    </div>
+    <div class="cs-meta-item">
+      <span class="cs-meta-label">Timeline</span>
+      <span class="cs-meta-value">6 weeks to MVP</span>
+    </div>
+    <div class="cs-meta-item">
+      <span class="cs-meta-label">Status</span>
+      <span class="cs-meta-value">Live · cbambridge.com</span>
+    </div>
+    <div class="cs-meta-item">
+      <span class="cs-meta-label">Type</span>
+      <span class="cs-meta-value">Solo build</span>
+    </div>
+  </div>
+
+  <div class="cs-stack-row">
+    <span class="cs-tag">Python</span>
+    <span class="cs-tag">LangChain</span>
+    <span class="cs-tag">LangGraph</span>
+    <span class="cs-tag">LangSmith</span>
+    <span class="cs-tag">RAG</span>
+    <span class="cs-tag">Vercel</span>
+  </div>
+
+  <div class="cs-stats">
+    <div class="cs-stat"><div class="cs-stat-num">85%</div><div class="cs-stat-label">Manual processing cut</div></div>
+    <div class="cs-stat"><div class="cs-stat-num">40%</div><div class="cs-stat-label">Agent error reduced</div></div>
+    <div class="cs-stat"><div class="cs-stat-num">200+</div><div class="cs-stat-label">Reg pages decomposed</div></div>
+    <div class="cs-stat"><div class="cs-stat-num">6 wks</div><div class="cs-stat-label">Concept to live MVP</div></div>
+  </div>
+</div>
+
+<section class="cs-body">
+  <div class="wrap">
+
+    <div class="cs-section">
+      <h2 class="cs-h2"><span class="cs-num">01 — Context</span>The problem hiding inside a regulation</h2>
+      <p>In 2026, the EU's Carbon Border Adjustment Mechanism (CBAM) began requiring importers to report the embedded carbon emissions of goods like steel, aluminium, cement, and fertilizer. For large corporations with sustainability teams, this is an annoyance. For the <strong>10,000+ small and mid-sized U.S. exporters</strong> in these supply chains, it's a wall — they have no compliance staff, no carbon accountants, and no affordable tooling.</p>
+      <p>The core friction wasn't understanding the law. It was the <strong>data work underneath it</strong>: pulling emissions figures out of utility bills, fuel receipts, and production logs that arrive as inconsistent, unstructured PDFs, then mapping them to CBAM's specific calculation methodology. Done by hand, a single product's reporting could take days of expert time most of these businesses don't have.</p>
+    </div>
+
+    <div class="cs-section">
+      <h2 class="cs-h2"><span class="cs-num">02 — Discovery</span>Finding the one workflow that mattered</h2>
+      <p>I started with conversations, not code. Talking to people inside small manufacturing and export operations, one pattern surfaced again and again: the bottleneck wasn't the final calculation or the regulatory interpretation — it was the <strong>manual extraction of data from documents</strong>. People were squinting at scanned utility bills and re-typing numbers into spreadsheets.</p>
+      <p>That insight scoped the entire MVP. Instead of trying to build a full compliance suite, I narrowed to the single highest-friction step and worked backward from it.</p>
+      <div class="cs-callout">
+        <p>"The temptation was to build everything the regulation touches. The discipline was building only the part people were actually stuck on."</p>
+      </div>
+    </div>
+
+    <div class="cs-section">
+      <h2 class="cs-h2"><span class="cs-num">03 — The key decision</span>Why an agentic pipeline, not a single prompt</h2>
+      <p>The naive version of this product is one large prompt: dump the PDF text in, ask the model for emissions data, hope for the best. I rejected that early. Emissions reporting is a <strong>high-stakes, auditable workflow</strong> — a hallucinated number isn't a quirky output, it's a compliance liability.</p>
+      <p>So I architected it as a multi-step agentic pipeline using LangGraph, where each stage has a defined job and its output can be inspected:</p>
+      <div class="cs-flow">
+        <div class="cs-flow-title">Document → structured emissions data</div>
+        <div class="cs-flow-steps">
+          <div class="cs-flow-step">Ingest PDF</div>
+          <span class="cs-flow-arrow">→</span>
+          <div class="cs-flow-step">Extract & classify</div>
+          <span class="cs-flow-arrow">→</span>
+          <div class="cs-flow-step">Map to CBAM logic</div>
+          <span class="cs-flow-arrow">→</span>
+          <div class="cs-flow-step">Validate & output</div>
+        </div>
+      </div>
+      <p>Choosing LangGraph over a single chain meant I could add checkpoints, retries, and inspection at each node — which became essential the moment things started breaking.</p>
+    </div>
+
+    <div class="cs-section">
+      <h2 class="cs-h2"><span class="cs-num">04 — What broke</span>The honest part</h2>
+      <p>The first version worked beautifully on clean PDFs and fell apart on real ones. Utility bills from different providers had wildly different layouts; some were scanned images, some had data in tables the extractor flattened into nonsense. Early on, the agent would confidently produce emissions figures that were <strong>plausible but wrong</strong> — the most dangerous failure mode for a compliance tool.</p>
+      <p>I couldn't ship something that fails silently. So before adding any features, I built the thing that made the product trustworthy:</p>
+      <ul class="cs-list">
+        <li><strong>A LangSmith observability layer</strong> so I could trace exactly where in the pipeline an extraction went wrong, instead of guessing from a bad final output.</li>
+        <li><strong>A gold-dataset regression framework</strong> — a curated set of documents with known-correct answers that every change had to pass before merging, so improvements in one area couldn't quietly break another.</li>
+      </ul>
+      <p>This eval infrastructure cut the agent error rate by <strong>40%</strong> and, more importantly, turned "I think it works" into "I can prove where it works and where it doesn't."</p>
+      <div class="cs-callout">
+        <p>"For an AI product, the eval framework matters more than the model. The model is a commodity; trust is the product."</p>
+      </div>
+    </div>
+
+    <div class="cs-section">
+      <h2 class="cs-h2"><span class="cs-num">05 — Making it usable</span>Removing expertise as a prerequisite</h2>
+      <p>The data pipeline solved the hard technical problem, but the user still faced 200+ pages of regulation to even know what to report. So I decomposed that regulation into a <strong>guided Registration Wizard</strong> — a structured flow that asks plain-language questions and assembles the compliance picture behind the scenes.</p>
+      <p>The goal was simple: a small-business operator with zero carbon-accounting background should be able to get to a valid output without ever reading the underlying law. That reframing — from "tool for experts" to "expertise built into the tool" — is what makes it a product rather than a utility.</p>
+    </div>
+
+    <div class="cs-section">
+      <h2 class="cs-h2"><span class="cs-num">06 — Outcome & reflection</span>What I'd build next</h2>
+      <p>The result was a <strong>live MVP shipped in 6 weeks</strong> that reduced manual processing time by an estimated 85% and, just as importantly, produced output its users could actually trust. I owned the full lifecycle: discovery, architecture, build, evaluation, and deployment.</p>
+      <p>What this project taught me as a product builder:</p>
+      <ul class="cs-list">
+        <li><strong>Scope to the real bottleneck.</strong> The discovery conversations saved me from building the wrong, larger thing.</li>
+        <li><strong>In AI products, trust is the feature.</strong> The eval framework wasn't overhead — it was the difference between a demo and a usable tool.</li>
+        <li><strong>The hardest part is rarely the model.</strong> It was the messy real-world data and the user's lack of domain expertise — both product problems, not ML problems.</li>
+      </ul>
+      <p>The natural next steps are multi-jurisdiction support (the same document-to-data engine generalizes well beyond CBAM) and automated report generation — turning the structured output directly into submission-ready filings.</p>
+    </div>
+
+  </div>
+</section>
+
+<div class="cs-cta">
+  <div class="wrap">
+    <h2 class="cs-cta-title">Want to see it live?</h2>
+    <p class="cs-cta-sub">CBAMbridge is deployed and actively being developed.</p>
+    <a href="https://cbambridge.com" target="_blank" class="btn btn-fill">Visit CBAMbridge →</a>
+    <a href="index.html" class="btn btn-outline">More work</a>
+  </div>
+</div>
+
+<footer>
+  <span>sumithgorityala.com</span>
+  <span>© 2026 Sumith Gorityala</span>
+</footer>
+
+</body>
+</html>
